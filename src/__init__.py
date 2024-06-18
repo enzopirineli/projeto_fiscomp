@@ -1,1 +1,1 @@
-"""A 2D Python Implementation of Smoothed Particle Hydrodynamics Fluid Simulation"""
+"""Implementação em 2D de simulação de fluidos, em python, utilizando hidrodinâmica suave de particulas"""

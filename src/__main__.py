@@ -1,18 +1,7 @@
-"""
-Python 2D SPH by Alexandre Sajus
-
-This script generates a 2D animation of a dam break using Smoothed Particle Hydrodynamics
-
-More information at:
-https://github.com/AlexandreSajus
-https://web.archive.org/web/20090722233436/http://blog.brandonpelfrey.com/?p=303
-"""
-
 import numpy as np
 from matplotlib import animation
 import matplotlib.pyplot as plt
 
-#import pythonsph
 from config import Config
 from particle import Particle
 from physics import (
@@ -21,8 +10,6 @@ from physics import (
     create_pressure,
     calculate_viscosity,
 )
-
-#print(f"Hello world from {__name__} ({__doc__})")
 
 (
     N,
@@ -45,29 +32,29 @@ from physics import (
 
 def update(particles: list[Particle], dam: bool) -> list[Particle]:
     """
-    Calculates a step of the simulation
+    Calcula um passo da simulação
     """
-    # Update the state of the particles (apply forces, reset values, etc.)
+    # Atualiza o estado das particulas (aplica as forças, reseta os valores, etc.)
     for particle in particles:
         particle.update_state(dam)
 
-    # Calculate density
+    # Calcula a densidade
     calculate_density(particles)
 
-    # Calculate pressure
+    # Calcula a pressão
     for particle in particles:
         particle.calculate_pressure()
 
-    # Apply pressure force
+    # Aplica a força de pressão
     create_pressure(particles)
 
-    # Apply viscosity force
+    # Aplica a força de viscosidade
     calculate_viscosity(particles)
 
     return particles
 
 
-# Setup matplotlib
+# Configuração do matplotlib
 fig = plt.figure()
 axes = fig.add_subplot(xlim=(-SIM_W, SIM_W), ylim=(0, SIM_W))
 (POINTS,) = axes.plot([], [], "bo", ms=20)
@@ -78,32 +65,33 @@ frame = 0
 
 dam_built = True
 
-# Animation function
+# Função de Animação
 def animate(i: int):
     """
-    Animates the simulation in matplotlib
+    Anima a simulação no matplotlib
 
     Args:
-        i: frame number
+        i: número de frames
 
     Returns:
-        points: the points to be plotted
+        points: os pontos para serem plotados
     """
     global simulation_state, frame, dam_built
-    if frame == 10:  # Break the dam at frame 10
+    if frame == 10:  # Quebra a barreira no frame 10
         print("Breaking the dam")
         dam_built = False
     simulation_state = update(simulation_state, dam_built)
-    # Create an array with the x and y coordinates of the particles
+    # Cria um array com as coordenadas x e y das particulas
     visual = np.array(
         [
             [particle.visual_x_pos, particle.visual_y_pos]
             for particle in simulation_state
         ]
     )
-    POINTS.set_data(visual[:, 0], visual[:, 1])  # Updates the position of the particles
+    POINTS.set_data(visual[:, 0], visual[:, 1])  # Atualiza a posição das particulas
     frame += 1
     return (POINTS,)
 
+# Inicia e salva a animação
 ani = animation.FuncAnimation(fig, animate, frames=300, interval=10, blit=True)
 ani.save('animation.gif', writer='pillow')

@@ -1,4 +1,4 @@
-"""Utilities and physics calculations"""
+"""Utilitários e cálculos físicos."""
 
 from math import sqrt
 
@@ -29,20 +29,20 @@ def start(
     xmin: float, xmax: float, ymin: float, space: float, count: int
 ) -> list[Particle]:
     """
-    Creates a rectangle of particles within xmin, xmax and ymin
-    We start by creating a particle at (xmin, ymin)
-    and then add particles until we reach count particles
-    Particles are represented by their position [x, y]
+    Cria um retângulo de partículas dentro de xmin, xmax e ymin
+    Começamos criando uma partícula em (xmin, ymin)
+    e então adicionamos partículas até alcançar o número de partículas
+    Partículas são representadas por suas posições [x, y]
 
     Args:
-        xmin (float): x min bound of the rectangle
-        xmax (float): x max bound of the rectangle
-        ymin (float): y min bound of the rectangle
-        space (float): space between particles
-        count (int): number of particles
+        xmin (float): x min bound do retângulo
+        xmax (float): x max bound do retângulo
+        ymin (float): y min bound do retângulo
+        space (float): espaço entre partículas
+        count (int): número de partículas
 
     Returns:
-        list: list of Particle objects
+        list: lista de objetos Particle
     """
     result = []
     x_pos, y_pos = xmin, ymin
@@ -57,25 +57,25 @@ def start(
 
 def calculate_density(particles: list[Particle]) -> None:
     """
-    Calculates density of particles
-        Density is calculated by summing the relative distance of neighboring particles
-        We distinguish density and near density to avoid particles to collide with each other
-        which creates instability
+    Calcula a densidade de partículas
+        A densidade é calculada somando a distância relativa de partículas vizinhas
+        Distintuimos densidade e densidade próxima para evitar que partículas colidam entre si,
+        o que cria instabilidade
 
     Args:
-        particles (list[Particle]): list of particles
+        particles (list[Particle]): lista de partículas
     """
     for i, particle_1 in enumerate(particles):
         density = 0.0
         density_near = 0.0
-        # Density is calculated by summing the relative distance of neighboring particles
-        for particle_2 in particles[i + 1 :]:
+        # A densidade é calculada somando a distância relativa de partículas vizinhas
+        for particle_2 in particles[i + 1:]:
             distance = sqrt(
                 (particle_1.x_pos - particle_2.x_pos) ** 2
                 + (particle_1.y_pos - particle_2.y_pos) ** 2
             )
             if distance < R:
-                # normal distance is between 0 and 1
+                # distância normal é entre 0 e 1
                 normal_distance = 1 - distance / R
                 density += normal_distance**2
                 density_near += normal_distance**3
@@ -88,13 +88,13 @@ def calculate_density(particles: list[Particle]) -> None:
 
 def create_pressure(particles: list[Particle]) -> None:
     """
-    Calculates pressure force of particles
-        Neighbors list and pressure have already been calculated by calculate_density
-        We calculate the pressure force by summing the pressure force of each neighbor
-        and apply it in the direction of the neighbor
+    Calcula a força de pressão de partículas
+        A lista de vizinhos e a pressão já foram calculadas por calculate_density
+        Calculamos a força de pressão somando a força de pressão de cada vizinho
+        e aplicamos em direção ao vizinho
 
     Args:
-        particles (list[Particle]): list of particles
+        particles (list[Particle]): lista de partículas
     """
     for particle in particles:
         press_x = 0.0
@@ -125,12 +125,12 @@ def create_pressure(particles: list[Particle]) -> None:
 
 def calculate_viscosity(particles: list[Particle]) -> None:
     """
-    Calculates the viscosity force of particles
-    Force = (relative distance of particles)*(viscosity weight)*(velocity difference of particles)
-    Velocity difference is calculated on the vector between the particles
+    Calcula a força de viscosidade de partículas
+    Força = (distância relativa de partículas)*(peso de viscosidade)*(diferença de velocidade de partículas)
+    Diferença de velocidade é calculada no vetor entre as partículas
 
     Args:
-        particles (list[Particle]): list of particles
+        particles (list[Particle]): lista de partículas
     """
 
     for particle in particles:
@@ -145,19 +145,13 @@ def calculate_viscosity(particles: list[Particle]) -> None:
                 particle_to_neighbor[1] / distance,
             ]
             relative_distance = distance / R
-            velocity_difference = (particle.x_vel - neighbor.x_vel) * normal_p_to_n[
-                0
-            ] + (particle.y_vel - neighbor.y_vel) * normal_p_to_n[1]
+            velocity_difference = (particle.x_vel - neighbor.x_vel) * normal_p_to_n[0] + (
+                particle.y_vel - neighbor.y_vel
+            ) * normal_p_to_n[1]
             if velocity_difference > 0:
                 viscosity_force = [
-                    (1 - relative_distance)
-                    * SIGMA
-                    * velocity_difference
-                    * normal_p_to_n[0],
-                    (1 - relative_distance)
-                    * SIGMA
-                    * velocity_difference
-                    * normal_p_to_n[1],
+                    (1 - relative_distance) * SIGMA * velocity_difference * normal_p_to_n[0],
+                    (1 - relative_distance) * SIGMA * velocity_difference * normal_p_to_n[1],
                 ]
                 particle.x_vel -= viscosity_force[0] * 0.5
                 particle.y_vel -= viscosity_force[1] * 0.5

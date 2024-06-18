@@ -1,4 +1,4 @@
-"""Defines the Particle class."""
+"""Define a classe Particula."""
 
 from math import sqrt
 from config import Config
@@ -25,24 +25,24 @@ from config import Config
 
 class Particle:
     """
-    A single particle of the simulated fluid
+    Uma única partícula do fluido simulado
 
-    Attributes:
-        x_pos: x position of the particle
-        y_pos: y position of the particle
-        previous_x_pos: x position of the particle in the previous frame
-        previous_y_pos: y position of the particle in the previous frame
-        visual_x_pos: x position of the particle that is shown on the screen
-        visual_y_pos: y position of the particle that is shown on the screen
-        rho: density of the particle
-        rho_near: near density of the particle, used to avoid collisions between particles
-        press: pressure of the particle
-        press_near: near pressure of the particle, used to avoid collisions between particles
-        neighbors: list of the particle's neighbors
-        x_vel: x velocity of the particle
-        y_vel: y velocity of the particle
-        x_force: x force applied to the particle
-        y_force: y force applied to the particle
+    Atributos:
+        x_pos: posição x da partícula
+        y_pos: posição y da partícula
+        previous_x_pos: posição x da partícula no quadro anterior
+        previous_y_pos: posição y da partícula no quadro anterior
+        visual_x_pos: posição x da partícula que é exibida na tela
+        visual_y_pos: posição y da partícula que é exibida na tela
+        rho: densidade da partícula
+        rho_near: densidade próxima da partícula, usada para evitar colisões entre partículas
+        press: pressão da partícula
+        press_near: pressão próxima da partícula, usada para evitar colisões entre partículas
+        neighbors: lista dos vizinhos da partícula
+        x_vel: velocidade x da partícula
+        y_vel: velocidade y da partícula
+        x_force: força x aplicada à partícula
+        y_force: força y aplicada à partícula
     """
 
     def __init__(self, x_pos: float, y_pos: float):
@@ -64,71 +64,71 @@ class Particle:
 
     def update_state(self, dam: bool):
         """
-        Updates the state of the particle
+        Atualiza o estado da partícula
         """
-        # Reset previous position
+        # Redefine a posição anterior
         (self.previous_x_pos, self.previous_y_pos) = (self.x_pos, self.y_pos)
 
-        # Apply force using Newton's second law and Euler integration with mass = 1 and dt = 1
+        # Aplica a força usando a segunda lei de Newton e integração de Euler com massa = 1 e dt = 1
         (self.x_vel, self.y_vel) = (
             self.x_vel + self.x_force,
             self.y_vel + self.y_force,
         )
 
-        # Move particle according to its velocity using Euler integration with dt = 1
+        # Move a partícula de acordo com sua velocidade usando integração de Euler com dt = 1
         (self.x_pos, self.y_pos) = (self.x_pos + self.x_vel, self.y_pos + self.y_vel)
 
-        # Set visual position. Visual position is the one shown on the screen
-        # It is used to avoid unstable particles to be shown
+        # Define a posição visual. A posição visual é a que é exibida na tela
+        # É usado para evitar que partículas instáveis sejam exibidas
         (self.visual_x_pos, self.visual_y_pos) = (self.x_pos, self.y_pos)
 
-        # Reset force
+        # Redefine a força
         (self.x_force, self.y_force) = (0.0, -G)
 
-        # Define velocity using Euler integration with dt = 1
+        # Define a velocidade usando integração de Euler com dt = 1
         (self.x_vel, self.y_vel) = (
             self.x_pos - self.previous_x_pos,
             self.y_pos - self.previous_y_pos,
         )
 
-        # Calculate velocity
+        # Calcula a velocidade
         velocity = sqrt(self.x_vel**2 + self.y_vel**2)
 
-        # Reduces the velocity if it is too high
+        # Reduz a velocidade se ela for muito alta
         if velocity > MAX_VEL:
             self.x_vel *= VEL_DAMP
             self.y_vel *= VEL_DAMP
 
-        # Wall constraints, if a particle is out of bounds, create a spring force to bring it back
+        # Restrições de parede, se uma partícula estiver fora dos limites, crie uma força de mola para trazê-la de volta
         if self.x_pos < -SIM_W:
             self.x_force -= (self.x_pos - -SIM_W) * WALL_DAMP
             self.visual_x_pos = -SIM_W
 
-        # Same thing as a wall constraint but for the dam that will move from dam to SIM_W
+        # O mesmo que uma restrição de parede, mas para a barragem que se moverá de dam para SIM_W
         if dam is True and self.x_pos > DAM:
             self.x_force -= (self.x_pos - DAM) * WALL_DAMP
 
-        # Same thing for the right wall
+        # O mesmo para a parede direita
         if self.x_pos > SIM_W:
             self.x_force -= (self.x_pos - SIM_W) * WALL_DAMP
             self.visual_x_pos = SIM_W
 
-        # Same thing but for the floor
+        # O mesmo, mas para o chão
         if self.y_pos < BOTTOM:
-            # We use SIM_W instead of BOTTOM here because otherwise particles are too low
+            # Usamos SIM_W em vez de BOTTOM aqui porque, caso contrário, as partículas ficam muito baixas
             self.y_force -= (self.y_pos - SIM_W) * WALL_DAMP
             self.visual_y_pos = BOTTOM
 
-        # Reset density
+        # Redefine a densidade
         self.rho = 0.0
         self.rho_near = 0.0
 
-        # Reset neighbors
+        # Redefine os vizinhos
         self.neighbors = []
 
     def calculate_pressure(self):
         """
-        Calculates the pressure of the particle
+        Calcula a pressão da partícula
         """
         self.press = K * (self.rho - REST_DENSITY)
         self.press_near = K_NEAR * self.rho_near
