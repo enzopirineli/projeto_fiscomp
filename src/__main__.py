@@ -1,6 +1,7 @@
 import numpy as np
 from matplotlib import animation
 import matplotlib.pyplot as plt
+import time
 
 from config import Config
 from particle import Particle
@@ -92,6 +93,11 @@ def animate(i: int):
     frame += 1
     return (POINTS,)
 
+start_time = time.time()
+
 # Inicia e salva a animação
 ani = animation.FuncAnimation(fig, animate, frames=300, interval=10, blit=True)
 ani.save('animation.gif', writer='pillow')
+
+end_time = time.time()
+print(f'Tempo de execução: {end_time - start_time:.6f}')
