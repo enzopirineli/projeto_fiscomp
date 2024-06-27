@@ -5,7 +5,7 @@ N = 250  # Número de partículas
 SIM_W = 0.5  # Largura do espaço de simulação
 BOTTOM = 0  # Nível do solo na simulação
 DAM = -0.3  # Posição da barragem, o espaço de simulação é entre -0.5 e 0.5
-DAM_BREAK = 200  # Número de frames antes que a barragem quebre
+DAM_BREAK = 100  # Número de frames antes que a barragem quebre
 
 # Parâmetros físicos
 G = 0.02 * 0.25  # Aceleração da gravidade
@@ -18,13 +18,12 @@ REST_DENSITY = 3.0
 R = SPACING * 1.25
 SIGMA = 0.2  # Fator de viscosidade
 MAX_VEL = 2.0  # Velocidade máxima das partículas, usada para evitar instabilidade
-# Fator de restrição de paredes, quanto mais as partículas são empurradas para longe das paredes da simulação
-WALL_DAMP = 0.05
+WALL_DAMP = 0.05# Fator de restrição de paredes, quanto mais as partículas são empurradas para longe das paredes da simulação
 VEL_DAMP = 0.5  # Fator de redução da velocidade quando as partículas ultrapassam MAX_VEL
 
 
 class Config:
-    """Contém os parâmetros da simulação e os parâmetros para a física."""
+    """Container para encapsular e acessar os parâmetros de configuração e físicos de forma organizada."""
 
     def __init__(self):
         return None

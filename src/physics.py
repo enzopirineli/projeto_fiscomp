@@ -59,7 +59,7 @@ def calculate_density(particles: list[Particle]) -> None:
     """
     Calcula a densidade de partículas
         A densidade é calculada somando a distância relativa de partículas vizinhas
-        Distintuimos densidade e densidade próxima para evitar que partículas colidam entre si,
+        Distinguimos densidade e densidade próxima para evitar que partículas colidam entre si,
         o que cria instabilidade
 
     Args:

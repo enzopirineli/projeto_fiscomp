@@ -1,1 +1,0 @@
-"""Implementação em 2D de simulação de fluidos, em python, utilizando hidrodinâmica suave de particulas"""
